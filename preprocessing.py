@@ -162,15 +162,10 @@ def is_edge_atk(board, move, sente):
 
 if __name__ == "__main__":
 
-    # games = pd.DataFrame(columns = ["GP", "GL", "GN", "GS", "GG", "GB", "GR", "GK",
-    #                                 "SP", "SL", "SN", "SS", "SG", "SB", "SR", "SK",
-    #                                 "Gpro", "Ghand", "Spro", "Shand", "am_i_sente"])
     games = pd.DataFrame(columns = ["P", "L", "N", "S", "G", "B", "R", "K",
                                     "promote_avg", "hand_avg", "major_diff_avg", "center_diff_avg",
                                     "edge_atk_diff", "castling_diff", "sacrifice_diff",
                                     "first_sacrifice", "am_i_sente"])
-
-    # games = pd.DataFrame(columns = ["promote", "hand_avg", "am_i_sente"])
 
     for filename in os.listdir("./data/"):
         with open("./data/" + filename, 'r') as f:
@@ -184,8 +179,6 @@ if __name__ == "__main__":
                 i_am_sente = 1
             else:
                 i_am_sente = 0
-
-            # print("Am I sente? " + str(i_am_sente))
 
             while content[0].strip()[0] != "1":
                 content.pop(0)
@@ -210,7 +203,6 @@ if __name__ == "__main__":
             for l in content:
                 if len(l) == 1:
                     # print("End of game")
-                    # print(b)
                     break
                 if l[0] != " " and not l[0].isdigit():
                     continue
@@ -219,7 +211,6 @@ if __name__ == "__main__":
                 else:
                     raw_move = l.split(" ")[-1].rstrip()
                 move = parse_move(raw_move, prev_dest)
-                # print(move)
                 dest = move["Dest"]
                 target = b.board[dest[1] - 1][dest[0] - 1] # order inverted because board is row then column
                 if target is not None and (target.type == "B" or target.type == "R"):
@@ -259,15 +250,6 @@ if __name__ == "__main__":
             center_diff_cum /= move_count
             edge_atk_diff /= move_count
 
-
-            # games.loc[len(games.index)] = [gote_features.move_count["P"], gote_features.move_count["L"], gote_features.move_count["N"], gote_features.move_count["S"],
-            #                                gote_features.move_count["G"], gote_features.move_count["B"], gote_features.move_count["R"], gote_features.move_count["K"],
-            #                                sente_features.move_count["P"], sente_features.move_count["L"], sente_features.move_count["N"], sente_features.move_count["S"],
-            #                                sente_features.move_count["G"], sente_features.move_count["B"], sente_features.move_count["R"], sente_features.move_count["K"],
-            #                                gote_features.promote, gote_features.hand_avg,
-            #                                sente_features.promote, sente_features.hand_avg,
-            #                                i_am_sente]
-    
             games.loc[len(games.index)] = [sente_features.move_count["P"] - gote_features.move_count["P"], sente_features.move_count["L"] - gote_features.move_count["L"],
                                            sente_features.move_count["N"] - gote_features.move_count["N"], sente_features.move_count["S"] - gote_features.move_count["S"],
                                            sente_features.move_count["G"] - gote_features.move_count["G"], sente_features.move_count["B"] - gote_features.move_count["B"],
@@ -276,8 +258,6 @@ if __name__ == "__main__":
                                            major_diff_cum, center_diff_cum, edge_atk_diff,
                                            sente_features.castling - gote_features.castling, sente_features.sacrifice - gote_features.sacrifice,
                                            first_sacrifice, i_am_sente]
-
-            # games.loc[len(games.index)] = [sente_features.promote - gote_features.promote, sente_features.hand_avg - gote_features.hand_avg, i_am_sente]
 
     games.to_csv("feature_table.csv", index=False)
 

@@ -11,7 +11,6 @@ if __name__ == "__main__":
     features = pd.read_csv("feature_table.csv")
     
     X = features.iloc[:, :-1].to_numpy()
-    # X = features.iloc[:, 2:-1].to_numpy()
     y = features.iloc[:, -1].to_numpy()
 
     X, X_test, y, y_test = train_test_split(X, y, test_size = 0.2, random_state = 81)
@@ -19,11 +18,6 @@ if __name__ == "__main__":
     # standardization
     scaler = preprocessing.StandardScaler().fit(X)
     X = scaler.transform(X)
-
-    # regression = sm.Logit(y, X).fit()
-    # print(regression.summary())
-
-    # print(scaler.mean_)
 
     svm_scores = []
     gbm_scores = []
